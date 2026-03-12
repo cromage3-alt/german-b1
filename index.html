@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Deutsch B1 — Lernplattform</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+
+  <!-- ===== THEMES SIDEBAR (full height, left edge) ===== -->
+  <aside class="sidebar" id="sidebar">
+
+    <div class="sidebar-brand">
+      <span class="sidebar-brand-icon"><i data-lucide="flag" style="width:18px;height:18px;stroke:#c2603d"></i></span>
+      <span class="sidebar-brand-text">Deutsch B1</span>
+    </div>
+
+    <div class="sidebar-heading">
+      Themes
+      <button class="add-theme-btn" id="add-theme-btn" title="New theme">+</button>
+    </div>
+
+    <div class="theme-item active" data-theme="verben-praep-akk" id="theme-verben-praep-akk">
+      <span class="theme-dot" style="background:#c2603d"></span>
+      <span class="theme-name">Verben + Präposition + Akkusativ</span>
+      <span class="theme-count" id="count-verben-praep-akk">30</span>
+    </div>
+
+    <div id="custom-themes-list"></div>
+
+  </aside>
+
+  <!-- ===== RIGHT COLUMN (header on top, content below) ===== -->
+  <div class="page-body">
+
+    <header class="header">
+      <nav class="nav">
+        <button class="nav-btn active" data-section="flashcards"><i data-lucide="layers"></i> Flashcards</button>
+        <button class="nav-btn" data-section="verbs"><i data-lucide="list"></i> Verb List</button>
+        <button class="nav-btn" data-section="quiz"><i data-lucide="circle-check"></i> Quiz</button>
+        <button class="nav-btn" data-section="writing"><i data-lucide="pencil-line"></i> Writing</button>
+        <button class="nav-btn" data-section="upload"><i data-lucide="upload"></i> Upload</button>
+      </nav>
+    </header>
+
+    <main class="main">
+
+      <!-- ========== FLASHCARDS ========== -->
+      <section id="flashcards" class="section active">
+        <h1 class="section-title" id="fc-section-title">German Verb Flashcards</h1>
+        <p class="section-sub">Verbs with Prepositions · B1 Level</p>
+
+        <div class="fc-nav-row">
+          <button class="fc-nav-arrow" id="fc-prev" title="Previous"><i data-lucide="chevron-left"></i></button>
+
+          <div class="fc-wrapper">
+            <div class="flashcard" id="flashcard">
+              <div class="fc-front">
+                <button class="fc-speak-btn" id="fc-speak-btn" title="Listen to pronunciation" onclick="event.stopPropagation(); speakVerb()">
+                  <i data-lucide="volume-2"></i>
+                </button>
+                <div class="fc-verb" id="fc-verb">achten auf</div>
+                <div class="fc-example" id="fc-example">Ich achte beim Fahrradfahren auf den Verkehr.</div>
+                <div class="fc-hint">Tap to flip</div>
+              </div>
+              <div class="fc-back">
+                <div class="fc-translations">
+                  <div class="fc-lang-row">
+                    <span class="fc-badge fc-badge-en">EN</span>
+                    <div class="fc-lang-body">
+                      <div class="fc-trans" id="fc-trans-en">to pay attention to</div>
+                      <div class="fc-examples-en" id="fc-examples-en"></div>
+                    </div>
+                  </div>
+                  <div class="fc-lang-row">
+                    <span class="fc-badge fc-badge-es">ES</span>
+                    <div class="fc-lang-body">
+                      <div class="fc-trans" id="fc-trans-es">prestar atención a</div>
+                      <div class="fc-examples-es" id="fc-examples-es"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button class="fc-nav-arrow" id="fc-next" title="Next"><i data-lucide="chevron-right"></i></button>
+        </div>
+
+        <div class="fc-counter-row">
+          <span class="fc-counter" id="fc-counter">1 / 30</span>
+        </div>
+
+        <div class="fc-progress">
+          <div class="fc-progress-bar" id="fc-progress-bar"></div>
+        </div>
+
+        <div class="fc-actions" id="fc-actions">
+          <button class="fc-grade-btn grade-again"  id="fc-again"  data-grade="1"><span>Forgot</span><kbd>1</kbd></button>
+          <button class="fc-grade-btn grade-hard"   id="fc-hard"   data-grade="2"><span>Hard</span><kbd>2</kbd></button>
+          <button class="fc-grade-btn grade-good"   id="fc-good"   data-grade="3"><span>Good</span><kbd>3</kbd></button>
+          <button class="fc-grade-btn grade-easy"   id="fc-easy"   data-grade="4"><span>Easy</span><kbd>4</kbd></button>
+        </div>
+
+        <div class="fc-stats">
+          <span class="stat-item again-color"><span class="stat-dot"></span><span id="stat-again">0</span></span>
+          <span class="stat-item hard-color"><span class="stat-dot"></span><span id="stat-hard">0</span></span>
+          <span class="stat-item good-color"><span class="stat-dot"></span><span id="stat-good">0</span></span>
+          <span class="stat-item easy-color"><span class="stat-dot"></span><span id="stat-easy">0</span></span>
+          <span class="stat-item">— <span id="stat-remaining">30</span> left</span>
+        </div>
+
+      </section>
+
+      <!-- ========== VERBLISTE ========== -->
+      <section id="verbs" class="section">
+        <h1 class="section-title">Verb List</h1>
+        <p class="section-sub">All verbs of the selected theme</p>
+
+        <div class="verb-toolbar">
+          <input class="search-input" id="verb-search" type="text" placeholder="🔍 Search verb..." />
+          <select class="filter-select" id="verb-filter">
+            <option value="all">All prepositions</option>
+            <option value="auf">auf</option>
+            <option value="über">über</option>
+            <option value="für">für</option>
+            <option value="an">an</option>
+            <option value="um">um</option>
+            <option value="in">in</option>
+          </select>
+        </div>
+
+        <div class="verb-table-wrap">
+          <table class="verb-table">
+            <thead>
+              <tr>
+                <th>Verb + Preposition</th>
+                <th>🇪🇸 Spanish</th>
+                <th>🇬🇧 English</th>
+                <th>Example sentence</th>
+              </tr>
+            </thead>
+            <tbody id="verb-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ========== QUIZ ========== -->
+      <section id="quiz" class="section">
+        <h1 class="section-title">Quiz</h1>
+        <p class="section-sub">Choose the correct German verb</p>
+
+        <div class="quiz-settings">
+          <label>Mode:
+            <select id="quiz-mode" class="filter-select">
+              <option value="de-es">German → Spanish</option>
+              <option value="de-en">German → English</option>
+              <option value="es-de">Spanish → German</option>
+              <option value="en-de">English → German</option>
+            </select>
+          </label>
+          <button class="btn btn-primary" id="quiz-start">Start Quiz</button>
+        </div>
+
+        <div class="quiz-area" id="quiz-area" style="display:none">
+          <div class="quiz-header">
+            <span class="quiz-score">Score: <strong id="quiz-score">0</strong></span>
+            <span class="quiz-counter" id="quiz-qcounter">Question 1/10</span>
+          </div>
+          <div class="quiz-progress"><div class="quiz-progress-fill" id="quiz-progress-fill"></div></div>
+
+          <div class="quiz-card">
+            <div class="quiz-question-label" id="quiz-qlabel">What is this in German?</div>
+            <div class="quiz-question" id="quiz-question">prestar atención a</div>
+            <div class="quiz-options" id="quiz-options"></div>
+            <div class="quiz-feedback" id="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-nav">
+            <button class="btn btn-primary" id="quiz-next" style="display:none">Next question →</button>
+          </div>
+        </div>
+
+        <div class="quiz-result" id="quiz-result" style="display:none">
+          <div class="result-card">
+            <div class="result-emoji" id="result-emoji"><i data-lucide="award"></i></div>
+            <h2 id="result-title">Excellent!</h2>
+            <p id="result-text">You got 8 out of 10 correct!</p>
+            <button class="btn btn-primary" id="quiz-restart">Play again</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== SCHREIBEN ========== -->
+      <section id="writing" class="section">
+        <h1 class="section-title">Writing & Correction</h1>
+        <p class="section-sub">Write a sentence · Get AI feedback</p>
+
+        <!-- API key setup -->
+        <div class="ai-key-bar" id="ai-key-bar">
+          <i data-lucide="key-round"></i>
+          <span>Paste your free <a href="https://console.groq.com/keys" target="_blank">Groq API key</a> to enable AI correction — free, no credit card needed</span>
+          <input class="ai-key-input" id="ai-key-input" type="password" placeholder="gsk_..." />
+          <button class="btn btn-primary btn-sm" id="ai-key-save">Save</button>
+          <button class="btn btn-ghost btn-sm" id="ai-key-clear" style="display:none">Remove</button>
+        </div>
+
+        <div class="writing-container">
+          <div class="writing-prompt-card">
+            <div class="writing-prompt-label">Write a sentence using:</div>
+            <div class="writing-verb-display" id="writing-verb">achten auf</div>
+            <div class="writing-hint" id="writing-hint">Hint: Ich achte beim Fahrradfahren auf den Verkehr.</div>
+            <div class="writing-verb-nav">
+              <button class="btn btn-ghost btn-sm" id="writing-prev-verb">← Prev</button>
+              <span class="writing-verb-counter" id="writing-verb-counter">1 / 30</span>
+              <button class="btn btn-ghost btn-sm" id="writing-next-verb">Next →</button>
+            </div>
+          </div>
+
+          <div class="writing-input-area">
+            <textarea id="writing-input" class="writing-textarea" placeholder="Write your sentence here..." rows="4"></textarea>
+            <div class="writing-toolbar">
+              <button class="btn-cta" id="writing-check">Check my sentence →</button>
+              <button class="btn btn-ghost btn-sm" id="writing-clear">Clear</button>
+            </div>
+          </div>
+
+          <!-- New structured feedback card -->
+          <div class="writing-feedback-area" id="writing-feedback-area" style="display:none">
+            <div class="fb-status-row" id="fb-status-row">
+              <span class="fb-status-dot" id="fb-status-dot"></span>
+              <span class="fb-status-label" id="fb-status-label"></span>
+            </div>
+            <p class="fb-summary" id="fb-summary"></p>
+
+            <div class="fb-block" id="fb-correction-block" style="display:none">
+              <div class="fb-block-label"><i data-lucide="wrench"></i> CORRECTED SENTENCE</div>
+              <div class="fb-corrected" id="fb-corrected"></div>
+            </div>
+
+            <div class="fb-block" id="fb-fix-block" style="display:none">
+              <div class="fb-block-label fb-block-label--red"><i data-lucide="map-pin"></i> WHAT TO FIX</div>
+              <p class="fb-fix-text" id="fb-fix-text"></p>
+            </div>
+
+            <div class="fb-block" id="fb-tip-block" style="display:none">
+              <div class="fb-block-label fb-block-label--muted"><i data-lucide="lightbulb"></i> TIP</div>
+              <p class="fb-tip-text" id="fb-tip-text"></p>
+            </div>
+          </div>
+
+          <div class="writing-history" id="writing-history">
+            <h3 class="history-title">History</h3>
+            <div id="history-list" class="history-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== UPLOAD ========== -->
+      <section id="upload" class="section">
+        <h1 class="section-title">Upload Vocabulary</h1>
+        <p class="section-sub">Upload an image, CSV, or add verbs manually</p>
+
+        <!-- Active theme indicator -->
+        <div class="upload-theme-bar">
+          <span class="theme-dot" id="upload-theme-dot" style="background:#c2603d;width:10px;height:10px"></span>
+          <span>Adding to: <strong id="upload-theme-name">Verben + Präposition + Akkusativ</strong></span>
+        </div>
+
+        <!-- shared AI key bar (same key as Writing tab) -->
+        <div class="ai-key-bar" id="ai-key-bar-upload">
+          <i data-lucide="key-round"></i>
+          <span id="ai-key-bar-upload-msg">Paste your free <a href="https://console.groq.com/keys" target="_blank">Groq API key</a> to enable smart AI image extraction</span>
+          <input class="ai-key-input" id="ai-key-input-upload" type="password" placeholder="gsk_..." />
+          <button class="btn btn-primary btn-sm" id="ai-key-save-upload">Save</button>
+          <button class="btn btn-ghost btn-sm" id="ai-key-clear-upload" style="display:none">Remove</button>
+        </div>
+
+        <!-- Three-section layout: scan | csv on top row, add manually full width below -->
+        <div class="upload-two-col">
+
+          <!-- LEFT: Scan from image -->
+          <div class="upload-card upload-card-flex">
+            <div class="upload-card-header">
+              <div class="upload-icon"><i data-lucide="scan-text"></i></div>
+              <div>
+                <h3>Scan from image</h3>
+                <p class="upload-desc">Photo of a vocab list or textbook — AI extracts everything.</p>
+              </div>
+            </div>
+            <div class="upload-drop-zone upload-drop-zone-grow" id="img-drop-zone">
+              <p>Drag an image here or</p>
+              <label class="btn btn-primary upload-label">
+                Choose image
+                <input type="file" id="img-input" accept="image/*" hidden />
+              </label>
+            </div>
+            <div id="img-preview-wrap" style="display:none">
+              <img id="img-preview" class="ocr-image-preview" />
+              <div class="ocr-status" id="ocr-status"></div>
+            </div>
+            <div id="ocr-result-wrap" style="display:none">
+              <label class="manual-form-label" style="display:block;margin-bottom:.5rem">
+                Extracted text — edit if needed:
+              </label>
+              <textarea id="ocr-text" class="writing-textarea" rows="6" style="font-size:.8rem;font-family:monospace;letter-spacing:0"></textarea>
+              <button class="btn btn-primary" id="ocr-parse-btn" style="margin-top:.625rem">Re-extract →</button>
+            </div>
+            <div class="upload-preview" id="ocr-preview"></div>
+            <button class="btn btn-success" id="ocr-apply" style="display:none">Add verbs ✓</button>
+          </div>
+
+          <!-- RIGHT: CSV only -->
+          <div class="upload-card upload-card-flex">
+            <div class="upload-card-header">
+              <div class="upload-icon"><i data-lucide="file-up"></i></div>
+              <div>
+                <h3>Upload CSV or TXT</h3>
+                <p class="upload-desc">One entry per line, e.g. <code>achten auf, to pay attention to</code></p>
+              </div>
+            </div>
+            <div class="upload-drop-zone upload-drop-zone-grow" id="drop-zone">
+              <p>Drag file here or</p>
+              <label class="btn btn-primary upload-label">
+                Choose file
+                <input type="file" id="file-input" accept=".csv,.txt" hidden />
+              </label>
+            </div>
+            <div class="upload-preview" id="upload-preview"></div>
+            <button class="btn btn-success" id="upload-apply" style="display:none">Add verbs ✓</button>
+          </div>
+
+        </div>
+
+        <!-- Add manually — full width, collapsible -->
+        <div class="upload-card upload-card-wide" style="margin-bottom:1.25rem">
+          <button class="manual-toggle" id="manual-toggle">
+            <span style="display:flex;align-items:center;gap:.5rem"><i data-lucide="edit-3"></i> Add manually</span>
+            <i data-lucide="chevron-down" id="manual-chevron"></i>
+          </button>
+          <div class="manual-collapsible" id="manual-collapsible" style="display:none">
+            <div class="manual-form" style="margin-top:.75rem;display:grid;grid-template-columns:1fr 1fr;gap:.625rem">
+              <input class="text-input" id="m-verb" placeholder="Verb (e.g. achten)" />
+              <input class="text-input" id="m-prep" placeholder="Preposition (e.g. auf)" />
+              <input class="text-input" id="m-es" placeholder="Spanish translation" />
+              <input class="text-input" id="m-en" placeholder="English translation" />
+              <input class="text-input" id="m-example" placeholder="Example sentence in German" style="grid-column:1/-1" />
+              <button class="btn btn-success" id="manual-add" style="grid-column:1/-1">Add +</button>
+            </div>
+            <div class="manual-feedback" id="manual-feedback"></div>
+          </div>
+        </div>
+
+        <!-- All verbs in current theme — editable -->
+        <div class="theme-verbs-section" id="theme-verbs-section">
+          <div class="theme-verbs-header">
+            <h3>Verbs in this theme <span class="theme-verbs-count" id="theme-verbs-count"></span></h3>
+            <button class="btn btn-ghost btn-sm" id="theme-select-all-btn">Select all</button>
+            <button class="btn btn-ghost btn-sm danger-btn" id="theme-delete-selected-btn" style="display:none">🗑 Delete selected</button>
+          </div>
+          <div class="theme-verb-list" id="theme-verb-list"></div>
+        </div>
+
+        <div class="template-section">
+          <h3>Download CSV template</h3>
+          <p>Use this template as a starting point:</p>
+          <button class="btn btn-ghost" id="download-template">⬇ Download template</button>
+        </div>
+      </section>
+
+    </main>
+  </div><!-- end .page-body -->
+
+  <!-- ===== NEW THEME MODAL ===== -->
+  <div class="modal-overlay" id="modal-overlay" style="display:none">
+    <div class="modal">
+      <h3 class="modal-title">Create new theme</h3>
+      <label class="modal-label">Theme name
+        <input class="text-input" id="new-theme-name" placeholder="e.g. Adjectives, Nouns..." />
+      </label>
+      <label class="modal-label">Color
+        <div class="color-picker" id="color-picker">
+          <button class="color-swatch active" data-color="#c2603d" style="background:#c2603d"></button>
+          <button class="color-swatch" data-color="#5a8a5e" style="background:#5a8a5e"></button>
+          <button class="color-swatch" data-color="#c87d2e" style="background:#c87d2e"></button>
+          <button class="color-swatch" data-color="#4a7fa5" style="background:#4a7fa5"></button>
+          <button class="color-swatch" data-color="#8b5e8b" style="background:#8b5e8b"></button>
+          <button class="color-swatch" data-color="#7a6e4e" style="background:#7a6e4e"></button>
+        </div>
+      </label>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="modal-cancel">Cancel</button>
+        <button class="btn btn-primary" id="modal-confirm">Create</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/tesseract.js@4.1.1/dist/tesseract.min.js"></script>
+  <script src="app.js"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>
