@@ -38,7 +38,7 @@
     <header class="header">
       <nav class="nav">
         <button class="nav-btn active" data-section="flashcards"><i data-lucide="layers"></i> Flashcards</button>
-        <button class="nav-btn" data-section="verbs"><i data-lucide="list"></i> Verb List</button>
+        <button class="nav-btn" data-section="verbs"><i data-lucide="list"></i> Word List</button>
         <button class="nav-btn" data-section="quiz"><i data-lucide="circle-check"></i> Quiz</button>
         <button class="nav-btn" data-section="writing"><i data-lucide="pencil-line"></i> Writing</button>
         <button class="nav-btn" data-section="upload"><i data-lucide="upload"></i> Upload</button>
@@ -61,6 +61,7 @@
                 <button class="fc-speak-btn" id="fc-speak-btn" title="Listen to pronunciation" onclick="event.stopPropagation(); speakVerb()">
                   <i data-lucide="volume-2"></i>
                 </button>
+                <div class="fc-word-type" id="fc-word-type" style="display:none"></div>
                 <div class="fc-verb" id="fc-verb">achten auf</div>
                 <div class="fc-example" id="fc-example">Ich achte beim Fahrradfahren auf den Verkehr.</div>
                 <div class="fc-hint">Tap to flip</div>
@@ -116,13 +117,13 @@
 
       <!-- ========== VERBLISTE ========== -->
       <section id="verbs" class="section">
-        <h1 class="section-title">Verb List</h1>
-        <p class="section-sub">All verbs of the selected theme</p>
+        <h1 class="section-title">Word List</h1>
+        <p class="section-sub">All vocabulary of the selected theme</p>
 
         <div class="verb-toolbar">
-          <input class="search-input" id="verb-search" type="text" placeholder="🔍 Search verb..." />
+          <input class="search-input" id="verb-search" type="text" placeholder="🔍 Search..." />
           <select class="filter-select" id="verb-filter">
-            <option value="all">All prepositions</option>
+            <option value="all">All</option>
             <option value="auf">auf</option>
             <option value="über">über</option>
             <option value="für">für</option>
@@ -136,7 +137,7 @@
           <table class="verb-table">
             <thead>
               <tr>
-                <th>Verb + Preposition</th>
+                <th>Word</th>
                 <th>🇪🇸 Spanish</th>
                 <th>🇬🇧 English</th>
                 <th>Example sentence</th>
@@ -150,7 +151,7 @@
       <!-- ========== QUIZ ========== -->
       <section id="quiz" class="section">
         <h1 class="section-title">Quiz</h1>
-        <p class="section-sub">Choose the correct German verb</p>
+        <p class="section-sub">Choose the correct translation</p>
 
         <div class="quiz-settings">
           <label>Mode:
@@ -261,7 +262,7 @@
       <!-- ========== UPLOAD ========== -->
       <section id="upload" class="section">
         <h1 class="section-title">Upload Vocabulary</h1>
-        <p class="section-sub">Upload an image, CSV, or add verbs manually</p>
+        <p class="section-sub">Upload an image, CSV, or add words manually</p>
 
         <!-- Active theme indicator -->
         <div class="upload-theme-bar">
@@ -309,7 +310,7 @@
               <button class="btn btn-primary" id="ocr-parse-btn" style="margin-top:.625rem">Re-extract →</button>
             </div>
             <div class="upload-preview" id="ocr-preview"></div>
-            <button class="btn btn-success" id="ocr-apply" style="display:none">Add verbs ✓</button>
+            <button class="btn btn-success" id="ocr-apply" style="display:none">Add words ✓</button>
           </div>
 
           <!-- RIGHT: CSV only -->
@@ -329,7 +330,7 @@
               </label>
             </div>
             <div class="upload-preview" id="upload-preview"></div>
-            <button class="btn btn-success" id="upload-apply" style="display:none">Add verbs ✓</button>
+            <button class="btn btn-success" id="upload-apply" style="display:none">Add words ✓</button>
           </div>
 
         </div>
@@ -342,11 +343,19 @@
           </button>
           <div class="manual-collapsible" id="manual-collapsible" style="display:none">
             <div class="manual-form" style="margin-top:.75rem;display:grid;grid-template-columns:1fr 1fr;gap:.625rem">
-              <input class="text-input" id="m-verb" placeholder="Verb (e.g. achten)" />
-              <input class="text-input" id="m-prep" placeholder="Preposition (e.g. auf)" />
+              <input class="text-input" id="m-verb" placeholder="Word (e.g. achten auf, das Haus)" />
+              <input class="text-input" id="m-prep" placeholder="Preposition (optional, e.g. auf)" />
               <input class="text-input" id="m-es" placeholder="Spanish translation" />
               <input class="text-input" id="m-en" placeholder="English translation" />
               <input class="text-input" id="m-example" placeholder="Example sentence in German" style="grid-column:1/-1" />
+              <select class="text-input filter-select" id="m-type" style="grid-column:1/-1">
+                <option value="">Type (optional)</option>
+                <option value="verb">Verb</option>
+                <option value="noun">Noun</option>
+                <option value="adjective">Adjective</option>
+                <option value="phrase">Phrase</option>
+                <option value="other">Other</option>
+              </select>
               <button class="btn btn-success" id="manual-add" style="grid-column:1/-1">Add +</button>
             </div>
             <div class="manual-feedback" id="manual-feedback"></div>
@@ -356,7 +365,7 @@
         <!-- All verbs in current theme — editable -->
         <div class="theme-verbs-section" id="theme-verbs-section">
           <div class="theme-verbs-header">
-            <h3>Verbs in this theme <span class="theme-verbs-count" id="theme-verbs-count"></span></h3>
+            <h3>Words in this theme <span class="theme-verbs-count" id="theme-verbs-count"></span></h3>
             <button class="btn btn-ghost btn-sm" id="theme-select-all-btn">Select all</button>
             <button class="btn btn-ghost btn-sm danger-btn" id="theme-delete-selected-btn" style="display:none">🗑 Delete selected</button>
           </div>

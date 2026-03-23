@@ -203,7 +203,10 @@ function renderFlashcard() {
   if (!fcDeck.length) return;
   const card = fcDeck[fcIndex];
   document.getElementById("fc-verb").textContent = card.verb;
-  document.getElementById("fc-example").textContent = card.example;
+  document.getElementById("fc-example").textContent = card.example || "";
+  // show word type label if present
+  const typeEl = document.getElementById("fc-word-type");
+  if (typeEl) { typeEl.textContent = card.type || ""; typeEl.style.display = card.type ? "" : "none"; }
   document.getElementById("fc-trans-es").textContent = card.es;
   document.getElementById("fc-trans-en").textContent = card.en;
   // render example lines under each language
@@ -370,10 +373,13 @@ function renderVerbTable() {
   const tbody = document.getElementById("verb-tbody");
   tbody.innerHTML = verbs.map(v => `
     <tr>
-      <td><span class="verb-chip">${escHtml(v.verb)}</span></td>
+      <td>
+        <span class="verb-chip">${escHtml(v.verb)}</span>
+        ${v.type ? `<span class="word-type-badge">${escHtml(v.type)}</span>` : ""}
+      </td>
       <td>${escHtml(v.es)}</td>
       <td>${escHtml(v.en)}</td>
-      <td class="verb-example">${escHtml(v.example)}</td>
+      <td class="verb-example">${escHtml(v.example || "")}</td>
     </tr>
   `).join("");
   if (!verbs.length) tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--gray-400);padding:2rem">No results found.</td></tr>`;
@@ -864,21 +870,22 @@ document.getElementById("manual-add").addEventListener("click", () => {
   const es      = document.getElementById("m-es").value.trim();
   const en      = document.getElementById("m-en").value.trim();
   const example = document.getElementById("m-example").value.trim();
+  const type    = document.getElementById("m-type").value.trim();
   const themeId = activeThemeId;
   const fb      = document.getElementById("manual-feedback");
 
   if (!verb || !es || !en) {
-    fb.textContent = "Please fill in verb, Spanish and English fields.";
+    fb.textContent = "Please fill in word, Spanish and English fields.";
     fb.className = "manual-feedback error";
     return;
   }
-  const entry = { verb: prep ? `${verb} ${prep}` : verb, prep, es, en, example, theme: themeId };
+  const entry = { verb: (prep && !verb.includes(prep)) ? `${verb} ${prep}` : verb, prep, es, en, example, type, theme: themeId };
   customVerbs.push(entry);
   saveState();
   renderSidebarThemes();
   if (themeId === activeThemeId) { shuffleDeck(); if (activeSection === "verbs") renderVerbTable(); }
   renderCustomVerbs();
-  ["m-verb","m-prep","m-es","m-en","m-example"].forEach(id => document.getElementById(id).value = "");
+  ["m-verb","m-prep","m-es","m-en","m-example","m-type"].forEach(id => document.getElementById(id) && (document.getElementById(id).value = ""));
   fb.textContent = `✓ "${entry.verb}" added to "${allThemes().find(t=>t.id===themeId)?.name || themeId}"!`;
   fb.className = "manual-feedback success";
   setTimeout(() => { fb.textContent = ""; }, 3000);
