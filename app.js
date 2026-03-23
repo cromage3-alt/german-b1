@@ -1124,14 +1124,15 @@ ${rawText}
 """
 
 Your job:
-1. Identify every German verb entry (with or without preposition, e.g. "achten auf", "sich erinnern an", "warten auf")
-2. For each verb, find or infer:
-   - The verb + preposition (e.g. "achten auf")
-   - The preposition alone (e.g. "auf")
+1. Identify EVERY German vocabulary entry — this includes verbs (with or without prepositions), nouns, adjectives, adverbs, phrases, and expressions.
+2. For each entry, find or infer:
+   - The word or phrase as it appears (e.g. "achten auf", "das Haus", "schön", "trotzdem")
+   - The preposition if it's a verb+preposition (e.g. "auf") — leave empty string "" for nouns, adjectives, etc.
+   - The word type: one of "verb", "noun", "adjective", "adverb", "phrase", or "other"
    - The Spanish translation — always provide the correct one
    - The English translation — always provide the correct one
-   - An example sentence in German — use one from the text if present, otherwise generate a natural B1-level sentence using the verb correctly.
-3. Fix any OCR errors in the German text (e.g. "vvarten" → "warten", "aul" → "auf")
+   - An example sentence in German — use one from the text if present, otherwise generate a natural B1-level sentence.
+3. Fix any OCR errors in the German text (e.g. "vvarten" → "warten", "aul" → "auf", "Hous" → "Haus")
 4. Skip any lines that are clearly headers, page numbers, or non-vocabulary content
 
 Return ONLY a JSON array (no markdown, no extra text):
@@ -1139,9 +1140,18 @@ Return ONLY a JSON array (no markdown, no extra text):
   {
     "verb": "achten auf",
     "prep": "auf",
+    "type": "verb",
     "es": "prestar atención a",
     "en": "to pay attention to",
     "example": "Ich achte beim Fahrradfahren auf den Verkehr."
+  },
+  {
+    "verb": "das Haus",
+    "prep": "",
+    "type": "noun",
+    "es": "la casa",
+    "en": "the house",
+    "example": "Das Haus ist sehr groß."
   }
 ]`;
 
@@ -1182,14 +1192,14 @@ Return ONLY a JSON array (no markdown, no extra text):
 function showOCRPreview(verbs, errors) {
   const preview = document.getElementById("ocr-preview");
   if (!verbs.length) {
-    preview.innerHTML = `<span style="color:var(--danger)">No verbs found. Try editing the text above and click Parse.</span>`;
+    preview.innerHTML = `<span style="color:var(--danger)">No words found. Try editing the text above and click Re-extract.</span>`;
     document.getElementById("ocr-apply").style.display = "none";
     return;
   }
   preview.innerHTML =
-    `<strong>${verbs.length} verb${verbs.length !== 1 ? "s" : ""} ready to add:</strong><br>` +
+    `<strong>${verbs.length} word${verbs.length !== 1 ? "s" : ""} ready to add:</strong><br>` +
     `<span style="font-size:.8rem;color:var(--text-secondary)">${verbs.slice(0, 6).map(v =>
-      `<strong>${escHtml(v.verb)}</strong> — ${escHtml(v.en)}`
+      `<strong>${escHtml(v.verb)}</strong>${v.type ? ` <em style="opacity:.6">(${v.type})</em>` : ""} — ${escHtml(v.en)}`
     ).join(" &nbsp;·&nbsp; ")}${verbs.length > 6 ? ` &nbsp;+${verbs.length - 6} more` : ""}</span>` +
     (errors.length ? `<br><span style="color:var(--danger);font-size:.8rem">${errors.slice(0,3).join("<br>")}</span>` : "");
   document.getElementById("ocr-apply").style.display = "inline-flex";
